@@ -11,14 +11,23 @@ import UIKit
 class TodoListViewController: UITableViewController {
 
     var itemArray = ["Quit Smoking", "Quit Drinking", "Teach and play with Charlie 1hr a day"]
+    let defaults = UserDefaults.standard
+    
+    
+    
+    
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        if let items = UserDefaults.standard.array(forKey: "TodoListArray") as? [String] {
+            itemArray = items
+        }
         // Do any additional setup after loading the view, typically from a nib.
     }
 
 
-    //Mark  - Table view datasource methods
+    //MARK  - Table view datasource methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return itemArray.count
@@ -64,6 +73,9 @@ class TodoListViewController: UITableViewController {
             print("Success")
             print(textField.text!)
             self.itemArray.append(textField.text ?? "New Item")  // if the text fields contains nil
+            
+            self.defaults.set(self.itemArray, forKey: "TodoListArray")  // defaults is a key:value pair and is saved in the plist file
+            
             self.tableView.reloadData()
         }
         
