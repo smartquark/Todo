@@ -18,7 +18,7 @@ class TodoListViewController: UITableViewController {
     }
 
 
-    // Mark  - Table view datasource methods
+    //Mark  - Table view datasource methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return itemArray.count
@@ -33,6 +33,25 @@ class TodoListViewController: UITableViewController {
     }
     
     
+    //MARK - TableView delegate methods
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print(indexPath.row)
+        print(itemArray[indexPath.row])
+        
+        
+        
+        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
+           tableView.cellForRow(at: indexPath)?.accessoryType = .none
+        }
+        else {
+            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        }
+        
+        tableView.deselectRow(at: indexPath, animated: true)   // flashes gray when selected then goes back to white
+       
+    }
+    
+  
     
     
 }
