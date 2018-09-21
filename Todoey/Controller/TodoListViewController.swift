@@ -11,23 +11,24 @@ import UIKit
 class TodoListViewController: UITableViewController {
 
     var itemArray = [Item]()
+     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     
     let defaults = UserDefaults.standard  // for using user defaults which is an interface to the defaults databse for persistence
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let newItem = Item()
-        newItem.title = "Quit Smoking"
-        itemArray.append(newItem)
-        
-        let newItem2 = Item()
-        newItem2.title = "Quit Drinking"
-        itemArray.append(newItem2)
-        
-        let newItem3 = Item()
-        newItem3.title = "Teach Charlie how to speak more!"
-        itemArray.append(newItem3)
+//        let newItem = Item()
+//        newItem.title = "Quit Smoking"
+//        itemArray.append(newItem)
+//
+//        let newItem2 = Item()
+//        newItem2.title = "Quit Drinking"
+//        itemArray.append(newItem2)
+//
+//        let newItem3 = Item()
+//        newItem3.title = "Teach Charlie how to speak more!"
+//        itemArray.append(newItem3)
        
 //         itemArray.append(newItem3)
 //         itemArray.append(newItem3)
@@ -43,9 +44,13 @@ class TodoListViewController: UITableViewController {
 //         itemArray.append(newItem3)
 //         itemArray.append(newItem3)
 //         itemArray.append(newItem3)
-//        if let items = UserDefaults.standard.array(forKey: "TodoListArray") as? [String] {
+        
+//         if let items = UserDefaults.standard.array(forKey: "TodoListArray") as? [Item] {
 //            itemArray = items
 //        }
+        
+        // load the item .plit
+        loadItems()
         // Do any additional setup after loading the view, typically from a nib.
     }
 
@@ -91,8 +96,8 @@ class TodoListViewController: UITableViewController {
 //        else {
 //            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
 //        }
-        
-        tableView.reloadData()  // forces the tableview to call it's dataqsource method again
+        saveItems()
+        //tableView.reloadData()  // forces the tableview to call it's dataqsource method again
         tableView.deselectRow(at: indexPath, animated: true)   // flashes gray when selected then goes back to white
        
     }
@@ -111,7 +116,9 @@ class TodoListViewController: UITableViewController {
             
             self.itemArray.append(newItem)  // if the text fields contains nil
             
-            self.defaults.set(self.itemArray, forKey: "TodoListArray")  // defaults is a key:value pair and is saved in the plist file
+            //self.defaults.set(self.itemArray, forKey: "TodoListArray")  // defaults is a key:value pair and is saved in the plist file
+            self.saveItems()
+           
             
             self.tableView.reloadData()
         }
@@ -128,6 +135,33 @@ class TodoListViewController: UITableViewController {
         present(alert, animated: true, completion: nil)
         
         
+    }
+    
+    func saveItems() {
+        let encoder = PropertyListEncoder()
+        print(dataFilePath!)
+        do {
+            let data =  try encoder.encode(itemArray)
+            try data.write(to: dataFilePath!)
+        } catch {
+            print("error encoding item array, \(error)")
+        }
+        tableView.reloadData()
+    
+    }
+    
+    func loadItems() {
+         if let data = try? Data(contentsOf: dataFilePath!) {
+            
+            let decoder = PropertyListDecoder()
+            
+            do {
+            itemArray = try decoder.decode([Item].self, from: data)
+            } catch {
+                print("Error decoding item array, \(error)")
+            }
+            
+        }
     }
     
 }
