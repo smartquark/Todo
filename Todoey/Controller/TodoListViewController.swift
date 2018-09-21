@@ -49,7 +49,7 @@ class TodoListViewController: UITableViewController {
 //            itemArray = items
 //        }
         
-        // load the item .plit
+        // load the item .plist
         loadItems()
         // Do any additional setup after loading the view, typically from a nib.
     }
