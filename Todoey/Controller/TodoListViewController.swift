@@ -19,41 +19,11 @@ class TodoListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
-//        let newItem = Item()
-//        newItem.title = "Quit Smoking"
-//        itemArray.append(newItem)
-//
-//        let newItem2 = Item()
-//        newItem2.title = "Quit Drinking"
-//        itemArray.append(newItem2)
-//
-//        let newItem3 = Item()
-//        newItem3.title = "Teach Charlie how to speak more!"
-//        itemArray.append(newItem3)
        
-//         itemArray.append(newItem3)
-//         itemArray.append(newItem3)
-//         itemArray.append(newItem3)
-//         itemArray.append(newItem3)
-//         itemArray.append(newItem3)
-//         itemArray.append(newItem3)
-//         itemArray.append(newItem3)
-//         itemArray.append(newItem3)
-//         itemArray.append(newItem3)
-//         itemArray.append(newItem3)
-//         itemArray.append(newItem3)
-//         itemArray.append(newItem3)
-//         itemArray.append(newItem3)
-//         itemArray.append(newItem3)
-        
-//         if let items = UserDefaults.standard.array(forKey: "TodoListArray") as? [Item] {
-//            itemArray = items
-//        }
-        
-        // load the item .plist
-       // loadItems()
-        // Do any additional setup after loading the view, typically from a nib.
+        loadItems()
+
     }
 
 
@@ -74,11 +44,6 @@ class TodoListViewController: UITableViewController {
         // ternary operator replaces if/else below
         cell.accessoryType = item.done ? .checkmark : .none
         
-//        if item.done == true {
-//            cell.accessoryType = .checkmark
-//        } else {
-//            cell.accessoryType = .none
-//        }
         
         
         return cell
@@ -90,16 +55,13 @@ class TodoListViewController: UITableViewController {
         print(indexPath.row)
         print(itemArray[indexPath.row])
         
-         itemArray[indexPath.row].done = !itemArray[indexPath.row].done  // replaces the if/else below (if it's true it becomes false vice-versa
+         itemArray[indexPath.row].done = !itemArray[indexPath.row].done  // replaces the if/else below (if it's
         
-//        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
-//           tableView.cellForRow(at: indexPath)?.accessoryType = .none
-//        }
-//        else {
-//            tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-//        }
-        saveItems()
-        //tableView.reloadData()  // forces the tableview to call it's dataqsource method again
+        // delete items from context
+        //context.delete(itemArray[indexPath.row])
+        //itemArray.remove(at: indexPath.row)
+        saveItems() // commit to persistent store
+        
         tableView.deselectRow(at: indexPath, animated: true)   // flashes gray when selected then goes back to white
        
     }
@@ -152,19 +114,58 @@ class TodoListViewController: UITableViewController {
     
     }
     
-//    func loadItems() {
-//         if let data = try? Data(contentsOf: dataFilePath!) {
-//
-//            let decoder = PropertyListDecoder()
-//
-//            do {
-//            itemArray = try decoder.decode([Item].self, from: data)
-//            } catch {
-//                print("Error decoding item array, \(error)")
-//            }
-//
+    func loadItems(with request : NSFetchRequest<Item> = Item.fetchRequest()) {
+        
+        //let request : NSFetchRequest<Item> = Item.fetchRequest()
+        do {
+            itemArray = try context.fetch(request)
+        } catch {
+            print("error fetching data from context \(error)")
+        }
+        
+        tableView.reloadData()
+    }
+    
+ 
+    
+}
+
+//MARK: - Search bar methods
+// group protocol methods together
+extension TodoListViewController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        //print(searchBar.text)
+        // case and diacretic insensitive
+        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        //request.predicate = predicate
+
+        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+        //request.sortDescriptors = [sortDescriptor]
+        loadItems(with: request)
+//        do {
+//            itemArray = try context.fetch(request)
+//        } catch {
+//            print("error fetching data from context \(error)")
 //        }
-//    }
+
+        //tableView.reloadData()
+       // print("clicked search bar")
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        if searchBar.text?.count == 0 {
+            loadItems()
+            
+            // notify search bar to relinquish status as first responder
+            DispatchQueue.main.async {
+                 searchBar.resignFirstResponder()
+            }
+           
+        }
+    }
     
 }
 
