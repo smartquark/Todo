@@ -7,11 +7,13 @@
 //
 // test git remote upload
 import UIKit
+import CoreData
 
 class TodoListViewController: UITableViewController {
 
     var itemArray = [Item]()
-     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+     //let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     let defaults = UserDefaults.standard  // for using user defaults which is an interface to the defaults databse for persistence
     
@@ -50,7 +52,7 @@ class TodoListViewController: UITableViewController {
 //        }
         
         // load the item .plist
-        loadItems()
+       // loadItems()
         // Do any additional setup after loading the view, typically from a nib.
     }
 
@@ -111,8 +113,10 @@ class TodoListViewController: UITableViewController {
         let action = UIAlertAction(title: "Add item", style: .default) { (action) in
             // what will happen once the user clicks the add item button on the uialert
             
-            let newItem = Item()
+            
+            let newItem = Item(context: self.context)
             newItem.title = textField.text!
+            newItem.done = false
             
             self.itemArray.append(newItem)  // if the text fields contains nil
             
@@ -138,31 +142,29 @@ class TodoListViewController: UITableViewController {
     }
     
     func saveItems() {
-        let encoder = PropertyListEncoder()
-        print(dataFilePath!)
+       
         do {
-            let data =  try encoder.encode(itemArray)
-            try data.write(to: dataFilePath!)
+            try context.save()
         } catch {
-            print("error encoding item array, \(error)")
+            print("error saving context, \(error)")
         }
-        tableView.reloadData()
+        self.tableView.reloadData()
     
     }
     
-    func loadItems() {
-         if let data = try? Data(contentsOf: dataFilePath!) {
-            
-            let decoder = PropertyListDecoder()
-            
-            do {
-            itemArray = try decoder.decode([Item].self, from: data)
-            } catch {
-                print("Error decoding item array, \(error)")
-            }
-            
-        }
-    }
+//    func loadItems() {
+//         if let data = try? Data(contentsOf: dataFilePath!) {
+//
+//            let decoder = PropertyListDecoder()
+//
+//            do {
+//            itemArray = try decoder.decode([Item].self, from: data)
+//            } catch {
+//                print("Error decoding item array, \(error)")
+//            }
+//
+//        }
+//    }
     
 }
 
