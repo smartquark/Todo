@@ -15,7 +15,7 @@ class TodoListViewController: UITableViewController {
      //let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
-    let defaults = UserDefaults.standard  // for using user defaults which is an interface to the defaults databse for persistence
+    //let defaults = UserDefaults.standard  // for using user defaults which is an interface to the defaults databse for persistence
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -27,7 +27,7 @@ class TodoListViewController: UITableViewController {
     }
 
 
-    //MARK  - Table view datasource methods
+    //MARK:  - Table view datasource methods
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return itemArray.count
     }
@@ -50,7 +50,7 @@ class TodoListViewController: UITableViewController {
     }
     
     
-    //MARK - TableView delegate methods
+    //MARK: - TableView delegate methods
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print(indexPath.row)
         print(itemArray[indexPath.row])
@@ -66,7 +66,7 @@ class TodoListViewController: UITableViewController {
        
     }
     
-  //MARK - Add new items
+    //MARK: - Add new items
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
