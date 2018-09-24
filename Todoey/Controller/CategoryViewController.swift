@@ -13,6 +13,7 @@ import CoreData
 class CategoryViewController: UITableViewController {
 
     var categoryArray = [Category]()
+   
     
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
@@ -21,7 +22,6 @@ class CategoryViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         loadItems()
-
     }
 
     
@@ -47,9 +47,18 @@ class CategoryViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        tableView.deselectRow(at: indexPath, animated: true)
-        saveItems()
+        performSegue(withIdentifier: "gotoItems", sender: self)
+        //tableView.deselectRow(at: indexPath, animated: true)
+        //saveItems()
         
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let destinationVC = segue.destination as! TodoListViewController
+        
+        if let indexPath = tableView.indexPathForSelectedRow {
+            destinationVC.selectedCategory = categoryArray[indexPath.row]
+        }
     }
     
     
