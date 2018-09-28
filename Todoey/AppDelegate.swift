@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import RealmSwift  //imported realmswift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,12 +17,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+      
         
-        // first thing that happens before first view controller loads
-        print("difinishlaunching with options")
+        print(Realm.Configuration.defaultConfiguration.fileURL)
         
-        //print(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last! as String)
+        do {
+            _ = try Realm()
+        } catch {
+            print("Error initialising new realm, \(error)")
+        }
+        
+        
+        
         
         return true
     }
