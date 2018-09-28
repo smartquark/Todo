@@ -8,12 +8,12 @@
 // test git remote upload
 import UIKit
 import CoreData
-
+// test commited
 class TodoListViewController: UITableViewController {
 
     var itemArray = [Item]()
    
-    var selectedCategory : Category? {
+     var selectedCategory : Category? {
         didSet{  // if the above selected category is selected with a value
             loadItems()
         }
