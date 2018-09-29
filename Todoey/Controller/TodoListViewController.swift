@@ -8,9 +8,12 @@
 // test git remote upload
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
 
 class TodoListViewController: SwipeTableViewController {
+    
+    @IBOutlet weak var searchBar: UISearchBar!
     
     var todoItems : Results<Item>?
     let realm = try! Realm()
@@ -21,9 +24,35 @@ class TodoListViewController: SwipeTableViewController {
         }
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        if let colourHex = selectedCategory?.colour {
+            
+            title = selectedCategory!.name
+            
+            
+            
+            guard let navBar = navigationController?.navigationBar else {fatalError("Navigation controller does not exist.")}
+            // guard if nav controller doesn't exist throw error crash etc
+           //let navBarColour = FlatWhite()
+            if let navBarColour = UIColor(hexString: colourHex) {
+                navBar.tintColor = ContrastColorOf(navBarColour, returnFlat: true)
+                
+                navBar.barTintColor = navBarColour
+                
+                navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : ContrastColorOf(navBarColour, returnFlat: true)]
+                
+                searchBar.barTintColor = navBarColour
+                
+                
+            }
+            
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        //print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        
         
     }
     
@@ -40,12 +69,29 @@ class TodoListViewController: SwipeTableViewController {
 //    }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
+        // called for every single cell in table view
         //let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
         let cell = super.tableView(tableView, cellForRowAt: indexPath)  // inherited from superclass
         
         if let item = todoItems?[indexPath.row] {
             cell.textLabel?.text = item.title
+            
+//            if let color = FlatWhite().darken(byPercentage:CGFloat(indexPath.row) / CGFloat(todoItems!.count)) {
+//                cell.backgroundColor = color              // chameleon framework
+//                cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+//
+//            }
+            
+            //let catColor = selectedCategory?.colour
+            // beneath optional chaining '?.darken'
+            if let color = UIColor(hexString: selectedCategory!.colour)?.darken(byPercentage:CGFloat(indexPath.row) / CGFloat(todoItems!.count)) {
+                cell.backgroundColor = color              // chameleon framework
+                cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+                
+            }
+            
+//            print("version 1: \(CGFloat(indexPath.row / todoItems!.count))")
+//            print("version 2: \(CGFloat(indexPath.row) / CGFloat(todoItems!.count))")
             
             // ternary operator replaces if/else below
             cell.accessoryType = item.done ? .checkmark : .none

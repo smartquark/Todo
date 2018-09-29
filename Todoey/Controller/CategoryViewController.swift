@@ -39,7 +39,7 @@ class CategoryViewController: SwipeTableViewController {
         
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
-        cell.backgroundColor = UIColor.randomFlat  // chameleon framework randomflat color
+        //cell.backgroundColor = UIColor.randomFlat  // chameleon framework randomflat color
         
 
         
@@ -121,7 +121,7 @@ class CategoryViewController: SwipeTableViewController {
             
             newCategory.name = textField.text!
             newCategory.colour = UIColor.randomFlat.hexValue()
-            
+            //colour = ComplementaryFlatColorOf(hexString: "#1D98F6")
             
             self.save(category: newCategory)
           
