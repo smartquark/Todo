@@ -41,12 +41,16 @@ class CategoryViewController: SwipeTableViewController {
         
         //cell.backgroundColor = UIColor.randomFlat  // chameleon framework randomflat color
         
-
-        
-        cell.textLabel?.text = categories?[indexPath.row].name ?? "No Categories added yet"
-        
-        cell.backgroundColor = UIColor(hexString: categories?[indexPath.row].colour ?? "1D98F6") // blue color from storyboard
-   
+        if let category = categories?[indexPath.row] {
+            
+            cell.textLabel?.text = category.name
+            
+            guard let categoryColour = UIColor(hexString: category.colour) else {fatalError()}
+           
+            cell.backgroundColor = categoryColour // blue color from storyboard
+            
+            cell.textLabel?.textColor = ContrastColorOf(categoryColour, returnFlat: true)
+        }
         return cell
     }
     
