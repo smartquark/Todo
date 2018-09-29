@@ -23,7 +23,7 @@ class CategoryViewController: SwipeTableViewController {
         super.viewDidLoad()
         
         loadItems()
-        tableView.rowHeight = 52
+       
     }
 
     
@@ -44,7 +44,6 @@ class CategoryViewController: SwipeTableViewController {
     
     
     //MARK: - TableView Delegate Methods
-    
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
